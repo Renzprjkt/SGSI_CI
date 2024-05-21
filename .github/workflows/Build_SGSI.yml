@@ -29,14 +29,8 @@ jobs:
           required "${{ steps.config.outputs.version }}" "VERSION config"
           required "${{ steps.config.outputs.repack_name }}" "REPACK_NAME config"
 
-      - name: Cleanup Workspace
-        run: |
-          docker rmi `docker images -q`
-          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/sudo apt/sources.list.d
-          sudo apt -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
-          sudo apt -y autoremove --purge
-          sudo apt -y autoclean
-          sudo apt clean
+      - name: Cleanup
+        uses: rokibhasansagar/slimhub_actions@main
 
       - name: Set swap to 5G
         uses: pierotofy/set-swap-space@master
