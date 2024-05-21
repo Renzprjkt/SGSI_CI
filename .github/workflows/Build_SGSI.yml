@@ -49,7 +49,6 @@ jobs:
         run: |
           sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/SGSI-build-tool/setup.sh
           sudo bash $GITHUB_WORKSPACE/SGSI-build-tool/setup.sh
-          Java -version
 
       - name: Build SGSI
         run: |
