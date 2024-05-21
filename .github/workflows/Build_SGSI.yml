@@ -36,4 +36,8 @@ jobs:
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: 5
+
+      - name: Setup Environment
+        run: |
+          sudo apt-get install -y git wget git zip unzip curl axel
     
