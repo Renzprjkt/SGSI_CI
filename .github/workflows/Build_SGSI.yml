@@ -44,4 +44,14 @@ jobs:
       - name: Cloning SGSI
         run: |
           git clone --recurse-submodules https://github.com/xiaoxindada/SGSI-build-tool.git -b 12 $GITHUB_WORKSPACE/SGSI-build-tool
-    
+
+      - name: Setup sGSI tools
+        run: |
+          sudo sed -i 's/USE_MIRROR_FOR_PIP\=true/USE_MIRROR_FOR_PIP\=false/' $GITHUB_WORKSPACE/SGSI-build-tool/setup.sh
+          sudo bash $GITHUB_WORKSPACE/SGSI-build-tool/setup.sh
+          Java -version
+
+      - name: Build SGSI
+        run: |
+          cd  $GITHUB_WORKSPACE/SGSI-build-tool
+          sudo bash ./url2SGSI.sh "${{ steps.config.outputs.rom_url }}" "${{ steps.config.outputs.os_type }}" "${{ steps.config.outputs.build_type }}"
