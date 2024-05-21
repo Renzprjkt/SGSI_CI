@@ -55,3 +55,25 @@ jobs:
         run: |
           cd  $GITHUB_WORKSPACE/SGSI-build-tool
           sudo bash ./url2SGSI.sh "${{ steps.config.outputs.rom_url }}" "${{ steps.config.outputs.os_type }}" "${{ steps.config.outputs.build_type }}"
+
+      - name: Repack File
+        run: |
+          cd $GITHUB_WORKSPACE/SGSI-build-tool
+          mkdir -p upload
+          zip -r ${{ steps.config.outputs.repack_name }} ./SGSI/*
+          if [[ $(du -sb "${{ steps.config.outputs.repack_name }}" | awk '{print $1}') -gt 2097152000 ]];then
+              echo -e "split packaging..."
+              tar -cpzf - "${{ steps.config.outputs.repack_name }}" | split -d -b 1024m - "upload/${{ steps.config.outputs.repack_name }}"
+          else
+              mv "${{ steps.config.outputs.repack_name }}" "upload/${{ steps.config.outputs.repack_name }}"
+          fi
+          ls "upload"
+
+      - name: Upload SGSI to GH-Release
+        uses: ncipollo/release-action@v1.8.6
+        with:
+          artifacts: ${{ github.workspace }}/SGSI-build-tool/upload/*
+          name: "${{ steps.config.outputs.os_type }}${{ steps.config.outputs.build_type }}-Android${{ steps.config.outputs.version }}-unpack"
+          tag: "${{ steps.config.outputs.os_type }}${{ steps.config.outputs.build_type }}-${{ steps.config.outputs.version }}-${{ github.run_number }}"
+          bodyFile: "${{ github.workspace}}/SGSI-build-tool/SGSI/build_info.txt"
+          token: ${{ secrets.GITHUB_TOKEN }}
